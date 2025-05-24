@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ static_url('univ.css') }}">
+    <title>Passione Trekking - Homepage</title>
+</head>
+<body>
+  <header>
+    <div class="logo">
+        <img src="/static/logo-transparent-png.png" alt="Passione Trekking" style="max-width: 50%; height: 100px; align: center;">
+    </div>
+    <nav>
+      <!-- Elementi della navigazione a sinistra -->
+      <ul class="nav-left">
+          <li><a href="/">Home</a></li>
+      </ul>
+      <!-- Elementi della navigazione a destra -->
+      <ul class="nav-right">
+          {% if log %}
+          <li class="account-menu">
+              <a href="#" class="dropbtn">
+                  Hello {{ username }}
+              </a>
+              <ul class="account-options">
+                  <li><a href="/logout">Logout</a></li>
+              </ul>
+          </li>
+          {% else %}
+          <li class="account-menu">
+              <a href="#" class="dropbtn">Account</a>
+              <ul class="account-options">
+                  <li><a href="/login">Login</a></li>
+                  <li><a href="/register">Register</a></li>
+              </ul>
+          </li>
+          {% end %}
+      </ul>
+    </nav>
+  </header>
+
+  {% block content %}
+  {% end block %}
+
+  <footer>
+    <p>&copy; 2025 Progetto SSH. Tutti i diritti riservati a Giorgia Bonfreschi e Piero Silvestri.</p>
+  </footer>
+</body>
+</html>

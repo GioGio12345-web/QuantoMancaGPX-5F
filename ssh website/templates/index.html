@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+    
+{% block content %}
+    <section class="hero" style="padding-top: 10%;padding-right: 10px;padding-left: 10px;">
+
+        <h2>Benvenuto in Passione Trekking!</h2>
+        <h3>Esplora e divertiti... ma in quanto tempo?</h3>
+        <h4>Passione trekking valuterà in quanto tempo arriverai alla tua destinazione</h4>
+        <h4>Ti basta inserire il tuo file (file.gpx) e noi lo calcoleremo!</h4>
+        {% if not log %}
+            <h4 style="margin-top: 20px;">{{message}}</h4>
+            <h4></h4>
+            <a href="/login" class="button" style="position: relative; margin-top: 20px;"> Login</a>
+
+        {% else %}
+
+            <form id="file_form" method="POST" action="/upload" enctype="multipart/form-data">
+                <h4 style="padding-top: 50px;">{{message}}</h4>
+                <h4></h4>
+                <input type="file" id="file_input" name="file" accept=".gpx" required style=" width: 350px; margin-top: 25px;"> <br>
+                <button id="file_button" type="submit" class="button" style="margin-top: 15px;">Inserisci file</button>
+            </form>
+            {% if errore %}
+                alert({{errore}})
+            {% end %}
+
+        {% end %}
+    {% if errore %}
+      <script type="text/javascript">
+        alert("{{ errore }}");
+      </script>
+    {% end %}
+
+
+    </section>
+
+{% end block %}

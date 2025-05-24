@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='univ.css') }}">
+{% end block %}
+
+{% block content %}
+<section class="hero">
+  <div>
+    <h2>{{ message }}</h2>
+  </div>
+  <div>
+    <form action="/login" method="post" id="additionalForm">
+      <div>
+        <h4 class="form-label" >Username</h4>
+        <input
+          type="text"
+          id="iusername"
+          name="username"
+          placeholder="Inserisci il tuo username"
+          required
+          class="form-control"
+        >
+      </div>
+      <div>
+        <h4 class="form-label" >Password</h4>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Inserisci la tua password"
+          required
+          class="form-control"
+        >
+      </div>
+
+      <div>
+        <h4></h4>
+        <button type="submit" class="button" style="position: relative;">Accedi</button>
+      </div>
+
+    </form>
+    <div style="position: relative;">
+      <h4 class="text-muted" style="color: white">
+        Non hai un account? Registrati
+        <a href="/register" class="btn btn-link" style="color: white" >qui</a>
+      </h4>
+    </div>
+  </div>
+
+</section>
+{% end block %}

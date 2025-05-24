@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>MAPPA</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-gpx@1.4.0/gpx.min.js"></script>
+</head>
+<body>
+  <div id="map" style="height: 500px;"></div>
+
+  <script>
+    // Definisci i differenti tile layer per la mappa
+
+    // Layer per la street map (OpenStreetMap)
+    var street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    });
+
+    // Layer per la mappa satellitare (utilizzo dei tile di Esri)
+    var satellite = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+      }
+    );
+
+    // Inizializza la mappa centrata sulle coordinate di Modena, con il layer street come default
+    var map = L.map('map', {
+      center: [44.6471, 10.9252],
+      zoom: 13,
+      layers: [street]
+    });
+
+    // Crea il controllo per la selezione del layer base
+    var baseMaps = {
+      "Street Map": street,
+      "Satellite": satellite
+    };
+    L.control.layers(baseMaps).addTo(map);
+
+    // Carica il file .gpx e aggiungilo alla mappa
+    new L.GPX('taburri-bellagamba.gpx', {
+      async: true,
+      marker_options: {
+        startIconUrl: 'images/pin-icon-start.png',
+        endIconUrl: 'images/pin-icon-end.png',
+        shadowUrl: 'images/pin-shadow.png'
+      }
+    }).on('loaded', function(e) {
+      // Adatta il livello della mappa ai confini del percorso GPX
+      map.fitBounds(e.target.getBounds());
+    }).addTo(map);
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <title>MAPPA</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<section class="hero">
+    <h2>La durata del tuo percorso sarà di</h2>
+    <h3>{{durata}}</h3>
+
+
+<!-- Mappa con punti -->
+<div id="map" style="height: 500px; position: relative; outline-style: none; margin-top: 5%;"></div>
+<script>
+  var punti = {{ punti }};
+
+  if (Array.isArray(punti) && punti.length > 0) {
+    var primoPunto = punti[0];
+    var ultimoPunto = punti[punti.length - 1];
+    var map = L.map('map').setView([primoPunto[0], primoPunto[1]], 14);
+  } else {
+    var map = L.map('map').setView([37.5, 15.1], 10);
+  }
+
+  var normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  });
+
+  var satelliteLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  });
+
+  var physicalLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenTopoMap contributors'
+  });
+
+  normalLayer.addTo(map); // Aggiunge il layer base per garantire la visualizzazione
+
+  var baseMaps = {
+    "Normale": normalLayer,
+    "Satellite": satelliteLayer,
+    "Fisica": physicalLayer
+  };
+
+  L.control.layers(baseMaps).addTo(map);
+
+  var polyline = L.polyline(punti.map(p => [p[0], p[1]]), {color: 'red'}).addTo(map);
+
+  L.marker([primoPunto[0], primoPunto[1]], {icon: L.icon({iconUrl: '/static/inizio.png', iconSize: [30, 40]})})
+    .addTo(map)
+    .bindPopup("Inizio percorso");
+
+  L.marker([ultimoPunto[0], ultimoPunto[1]], {icon: L.icon({iconUrl: '/static/fine.png', iconSize: [30, 40]})})
+    .addTo(map)
+    .bindPopup("Fine percorso");
+</script>
+
+
+</section>
+
+
+
+{% end block %}

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero" style="padding-top: 5%;">
+  <div id="registrationContainer">
+        <!-- Step 1: Inserimento username e password -->
+        <div id="step1" >
+          <h2>{{ message }}</h2>
+          <form  method="post" id="registerForm">
+            <div>
+              <h4 class="form-label">Username</h4>
+              <input type="text" id="iusername" name="username" placeholder="Inserisci il tuo username" required class="form-control">
+            </div>
+            <div>
+              <h4 class="form-label">Password</h4>
+              <input type="password" id="password" name="password" placeholder="Inserisci la tua password" required class="form-control">
+            </div>
+            <button type="submit" class="button" style="position: relative">Continua</button>
+          </form>
+          <div style="position: relative;">
+            <h4 class="text-muted" style="color: white">
+              Sei già registrato? Accedi
+              <a href="/login" class="btn btn-link" style="color: white">qui</a>
+            </h4>
+          </div>
+        </div>
+
+        <!-- Step 2: Selezione del livello di prestanza fisica -->
+        <div id="step2" style="display: none; position: relative; color: white;">
+          <h2>Seleziona il tuo livello di prestanza fisica</h2>
+          <form id="additionalForm" method="post">
+            <input type="hidden" id="hiddenUsername" name="username">
+            <div class="form-group">
+              <label>Livello di prestanza fisica:</label>
+              <div>
+                <input type="radio" id="professionista" name="prestanza" value="professionista" required>
+                <label for="professionista">Livello professionista</label>
+              </div>
+              <div>
+                <input type="radio" id="avanzato" name="prestanza" value="avanzato">
+                <label for="avanzato">Livello avanzato</label>
+              </div>
+              <div>
+                <input type="radio" id="intermedio" name="prestanza" value="intermedio">
+                <label for="intermedio">Livello intermedio</label>
+              </div>
+              <div>
+                <input type="radio" id="principiante" name="prestanza" value="principiante">
+                <label for="principiante">Livello principiante</label>
+              </div>
+              <div>
+                <input type="radio" id="sedentario" name="prestanza" value="base">
+                <label for="sedentario">Livello sedentario</label>
+              </div>
+            </div>
+
+            <!-- Caricamento immagine profilo (opzionale) -->
+            <div class="form-group">
+              <br></br>
+              <label for="profileImage">Carica un'immagine profilo (opzionale):</label>
+              <input type="file" id="profileImage" name="profileImage" accept="image/*" style="align:center">
+            </div>
+
+            <button type="submit" class="button" >Registrati</button>
+          </form>
+        </div>
+      </div>
+
+</section>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var username = document.getElementById('iusername').value;
+  var password = document.getElementById('password').value;
+
+  fetch('/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+      document.getElementById('hiddenUsername').value = username;
+    } else {
+      alert(data.message || 'Errore durante la registrazione');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Errore durante la registrazione');
+  });
+});
+
+document.getElementById('additionalForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var username = document.getElementById('hiddenUsername').value;
+  var prestanza = document.querySelector('input[name="prestanza"]:checked').value;
+
+  if (!prestanza) {
+    alert('Seleziona un livello di prestanza');
+    return;
+  }
+
+  fetch('/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'username=' + encodeURIComponent(username) + '&prestanza=' + encodeURIComponent(prestanza)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = data.redirect || '/login';
+    } else {
+      alert(data.message || 'Errore durante la registrazione');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Errore durante la registrazione');
+  });
+});
+</script>
+
+{% end block %}
